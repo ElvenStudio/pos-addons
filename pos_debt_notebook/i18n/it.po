@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 17:49+0000\n"
-"PO-Revision-Date: 2017-05-24 17:49+0000\n"
+"POT-Creation-Date: 2017-05-25 08:18+0000\n"
+"PO-Revision-Date: 2017-05-25 08:18+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,7 @@ msgstr ""
 #. module: pos_debt_notebook
 #. openerp-web
 #: code:addons/pos_debt_notebook/static/src/xml/pos.xml:11
+#: field:res.partner,debt:0
 #, python-format
 msgid "Debt"
 msgstr "Debito"
@@ -64,7 +65,7 @@ msgstr "Registro"
 #. module: pos_debt_notebook
 #: model:ir.model,name:pos_debt_notebook.model_res_partner
 msgid "Partner"
-msgstr "Partner"
+msgstr "Cliente"
 
 #. module: pos_debt_notebook
 #. openerp-web
@@ -94,6 +95,11 @@ msgstr "Il cliente selezionato non ha un debito."
 #, python-format
 msgid "There must be at least one product in your order before it can be validated. (Hint: you can use some dummy zero price product)"
 msgstr "Ci deve essere almeno un prodotto nell'ordine prima che possa essere validato. (Suggerimento: è possibile utilizzare un prodotto fittizio senza prezzo)"
+
+#. module: pos_debt_notebook
+#: help:res.partner,debt:0
+msgid "This debt value for only current company"
+msgstr "Valore del debito per l'azienda corrente"
 
 #. module: pos_debt_notebook
 #. openerp-web
