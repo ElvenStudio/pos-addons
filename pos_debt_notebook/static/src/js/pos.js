@@ -181,14 +181,14 @@ openerp.pos_debt_notebook = function(instance){
                 }
                 // if the order is empty, add a dummy product with price = 0
                 var order = self.pos.get_order();
-                if (order) {
-                    var lastorderline = order.getLastOrderline();
-                    if (lastorderline === null &&
-                            self.pos.config.debt_dummy_product_id){
-                        var dummy_product = self.pos.db.get_product_by_id(
-                            self.pos.config.debt_dummy_product_id[0]);
-                        order.addProduct(dummy_product, {'price': 0});
-                        }
+                if (!order){
+                    self.pos.new_order();
+                    order = self.pos.get_order();
+                }
+                var has_lines = order.get('orderLines').length > 0;
+                if (!has_lines && self.pos.config.debt_dummy_product_id){
+                    var dummy_product = self.pos.db.get_product_by_id(self.pos.config.debt_dummy_product_id[0]);
+                    order.addProduct(dummy_product, {'price': 0});
                 }
 
                 // select debt journal
