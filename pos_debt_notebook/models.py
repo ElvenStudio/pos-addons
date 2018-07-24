@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class ResPartner(models.Model):
@@ -47,7 +50,31 @@ class ResPartner(models.Model):
 
     debt = fields.Float(
         compute='_compute_debt', string='Debt', readonly=True,
+        search='_search_upper',
         digits=dp.get_precision('Account'), help='This debt value for only current company')
+
+    @api.multi
+    def _search_upper(self, operator, value):
+
+        debt_journal = self.env['account.journal'].search([
+            ('company_id', '=', self.env.user.company_id.id), ('debt', '=', True)])
+        debt_account = []
+        for journal in debt_journal:
+            debt_account.append(journal.default_debit_account_id.id)
+
+        if len(debt_account) > 0:
+            query = """SELECT l.partner_id
+                  FROM account_move_line l
+                  WHERE l.account_id IN %s
+                  GROUP BY l.partner_id
+                  HAVING SUM(l.debit - l.credit) """ + operator + '%s'
+            self._cr.execute(query, (tuple(debt_account), value))
+
+            partner_ids = []
+            for partner_id in self._cr.fetchall():
+                partner_ids.append(partner_id[0])
+
+        return [('id', 'in', partner_ids)]
 
 
 class AccountJournal(models.Model):

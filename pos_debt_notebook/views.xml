@@ -40,6 +40,17 @@
     </field>
 </record>
 
+<record id="res_partner_debt_search_view" model="ir.ui.view">
+    <field name="name">res.partner.debt.search.view</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_res_partner_filter"/>
+    <field name="arch" type="xml">
+        <filter string="Suppliers" position="after">
+            <separator />
+            <filter string="Customers with open debt" name='filter_customer_with_debt' domain="[('debt', '>', 0)]" />
+        </filter>
+    </field>
+</record>
 
 <!-- ACCOUNT JOURNAL -->
 <record id="view_account_journal_pos_user_form" model="ir.ui.view">
