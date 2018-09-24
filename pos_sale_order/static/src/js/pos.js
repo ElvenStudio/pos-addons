@@ -13,7 +13,7 @@ function pos_website_sale(instance, module){ //module is instance.point_of_sale
             return new instance.web.Model('sale.order').query(['partner_id', 'amount_total']).filter([['name','=like',name_like]]).all();
         },
         load_sale_order_lines: function(id){
-            return new instance.web.Model('sale.order.line').query(['product_id', 'product_uom_qty','discount']).filter([['order_id','=',id]]).all();
+            return new instance.web.Model('sale.order.line').query(['product_id', 'product_uom_qty','discount','price_unit']).filter([['order_id','=',id]]).all();
         },
         apply_sale_order: function(id){
             var self = this;
@@ -23,9 +23,11 @@ function pos_website_sale(instance, module){ //module is instance.point_of_sale
                 $.each(lines, function(k, item){
                     var product = self.pos.db.get_product_by_id(item.product_id[0]);
                     var options = {
-                        'quantity':item.product_uom_qty
+                        'quantity':item.product_uom_qty,
                     };
                     order.addProduct(product, options);
+                    order.getSelectedLine().set_manual_price(false);
+                    order.getSelectedLine().set_unit_price(item.price_unit);
                     if (item.discount)
                         order.getSelectedLine().set_discount(item.discount);
                 });
@@ -41,7 +43,11 @@ function pos_website_sale(instance, module){ //module is instance.point_of_sale
                 self.find_sale_order('%'+self.order_name+'%').then(function(orders){
                     if (orders.length > 1){
                         //TODO show orders list
-                        //return;
+                    	self.pos_widget.screen_selector.show_popup('error',{
+                            'message': _t('Found more orders'),
+                            'comment': _t('More orders have been found, make a better search by order number'),
+                        });
+                        return;
                     }
                     var sale_order = orders[0];
                     if (! sale_order){

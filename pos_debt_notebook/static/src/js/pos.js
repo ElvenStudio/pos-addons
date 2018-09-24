@@ -47,10 +47,12 @@ openerp.pos_debt_notebook = function(instance){
             });
 
             if(!journal.debt && (journal.type !== 'cash' || journal.debt)){
-                newPaymentline.set_amount(this.getDueLeft());
+                newPaymentline.set_amount( parseFloat(Math.max(this.getDueLeft(),0)).toFixed(2) );
             }
+            
             paymentLines.add(newPaymentline);
             this.selectPaymentline(newPaymentline);
+            
         },
 
     });
@@ -214,7 +216,7 @@ openerp.pos_debt_notebook = function(instance){
                     });
                 }
                 var newDebtPaymentline = new module.Paymentline({},{cashregister:debtjournal, pos:self.pos});
-                newDebtPaymentline.set_amount(self.new_client.debt * -1);
+                newDebtPaymentline.set_amount(parseFloat(self.new_client.debt * -1).toFixed(2));
                 paymentLines.add(newDebtPaymentline);
                 self.pos_widget.screen_selector.set_current_screen('payment');
             });
